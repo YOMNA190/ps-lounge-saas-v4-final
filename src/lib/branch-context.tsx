@@ -20,9 +20,17 @@ export function BranchProvider({ children }: { children: ReactNode }) {
   const fetchBranch = async (id: string) => {
     setLoading(true)
     try {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('branches').select('*').eq('id', id).single()
-      setBranch(data as Branch ?? null)
+      if (error) {
+        console.error('Error fetching branch:', error)
+        setBranch(null)
+      } else {
+        setBranch(data as Branch ?? null)
+      }
+    } catch (err) {
+      console.error('Fetch branch catch error:', err)
+      setBranch(null)
     } finally {
       setLoading(false)
     }

@@ -1,11 +1,26 @@
 import { useBranch } from '@/lib/branch-context'
+import { Loader2 } from 'lucide-react'
 
 interface Props { children: React.ReactNode }
+
+function Spinner() {
+  return (
+    <div style={{
+      minHeight: '100dvh', display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center', background: 'var(--ps-darker)',
+    }}>
+      <Loader2 className="animate-spin text-ps-blue" size={36} />
+      <p style={{ color: 'var(--ps-muted)', fontSize: 12, fontFamily: 'monospace', marginTop: 16 }}>
+        PS LOUNGE
+      </p>
+    </div>
+  )
+}
 
 export default function TrialGuard({ children }: Props) {
   const { branch, loading } = useBranch()
 
-  if (loading) return null
+  if (loading) return <Spinner />
 
   // No plan info yet → allow through
   if (!branch) return <>{children}</>
@@ -19,7 +34,7 @@ export default function TrialGuard({ children }: Props) {
     if (expired) return (
       <div className="min-h-screen flex items-center justify-center p-6"
         style={{ background:'var(--ps-darker)' }}>
-        <div className="max-w-md w-full text-center space-y-6">
+      <div className="max-w-md w-full text-center space-y-6">
           <div className="text-6xl">⏰</div>
           <div>
             <h1 className="text-2xl font-bold text-ps-text mb-2">انتهت فترة التجربة</h1>

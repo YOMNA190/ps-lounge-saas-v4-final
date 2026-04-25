@@ -4,6 +4,7 @@ import { useAuth } from './lib/auth-context'
 import { useBranch } from './lib/branch-context'
 import TrialGuard        from './components/TrialGuard'
 import LoginPage         from './pages/LoginPage'
+import { Loader2 }       from 'lucide-react'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import OnboardingPage    from './pages/OnboardingPage'
 import DashboardLayout   from './pages/DashboardLayout'
@@ -24,7 +25,7 @@ function Spinner() {
       minHeight: '100dvh', display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center', background: 'var(--ps-darker)',
     }}>
-      <span className="spinner" style={{ width: 36, height: 36 }}/>
+      <Loader2 className="animate-spin text-ps-blue" size={36} />
       <p style={{ color: 'var(--ps-muted)', fontSize: 12, fontFamily: 'monospace', marginTop: 16 }}>
         PS LOUNGE
       </p>

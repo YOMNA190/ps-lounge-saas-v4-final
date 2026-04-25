@@ -51,6 +51,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
+    // 1. Initial session check
+    const initSession = async () => {
+      try {
+        const { data: { session: sess } } = await supabase.auth.getSession()
+        setSession(sess)
+        setUser(sess?.user ?? null)
+        if (sess?.user) {
+          const prof = await loadProfile(sess.user.id)
+          setProfile(prof)
+        }
+      } catch (err) {
+        console.error('Auth init error:', err)
+      } finally {
+        setLoading(false)
+        initialized.current = true
+      }
+    }
+    initSession()
+
+    // 2. Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, sess) => {
         setSession(sess)
@@ -69,9 +89,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         initialized.current = true
       }
     )
+
+    // 3. Safety timeout
     const timeout = setTimeout(() => {
       if (!initialized.current) setLoading(false)
-    }, 3000)
+    }, 5000)
+
     return () => { subscription.unsubscribe(); clearTimeout(timeout) }
   }, [])
 
@@ -110,6 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const role = profile?.role
+
   return (
     <AuthContext.Provider value={{
       user, profile, session, loading,
